@@ -65,7 +65,7 @@ public class FloatButton extends ImageView {
 
     public void open(int betweenTimes) {
         if (openAnimator != null) {
-            if (isRunning)
+            if (openAnimator.isStarted())
                 return;
         } else {
             openAnimator = getObjectAnimator(true, betweenTimes);
@@ -76,7 +76,7 @@ public class FloatButton extends ImageView {
 
     public void close(int betweenTimes) {
         if (closeAnimator != null) {
-            if (isRunning)
+            if (closeAnimator.isStarted())
                 return;
         } else {
             closeAnimator = getObjectAnimator(false, betweenTimes);
