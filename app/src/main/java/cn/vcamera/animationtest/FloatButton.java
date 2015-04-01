@@ -29,7 +29,6 @@ public class FloatButton extends ImageView {
 
     private int dx;
     private int dy;
-    private boolean isRunning;
 
     FrameLayout.LayoutParams params;
     ObjectAnimator openAnimator;
@@ -63,26 +62,20 @@ public class FloatButton extends ImageView {
         caculate();
     }
 
-    public void open(int betweenTimes) {
-        if (openAnimator != null) {
-            if (openAnimator.isStarted())
-                return;
-        } else {
+    public ObjectAnimator open(int betweenTimes) {
+        if (openAnimator == null) {
             openAnimator = getObjectAnimator(true, betweenTimes);
         }
-        isRunning = true;
         openAnimator.start();
+        return openAnimator;
     }
 
-    public void close(int betweenTimes) {
-        if (closeAnimator != null) {
-            if (closeAnimator.isStarted())
-                return;
-        } else {
+    public ObjectAnimator close(int betweenTimes) {
+        if (closeAnimator == null) {
             closeAnimator = getObjectAnimator(false, betweenTimes);
         }
-        isRunning = true;
         closeAnimator.start();
+        return closeAnimator;
     }
 
     private ObjectAnimator getObjectAnimator(final boolean isOpen, int betweenTimes) {
@@ -116,7 +109,6 @@ public class FloatButton extends ImageView {
                     ViewGroup parent = (ViewGroup) getParent();
                     parent.removeView(FloatButton.this);
                 }
-                isRunning = false;
             }
         });
         animation.setStartDelay(betweenTimes);

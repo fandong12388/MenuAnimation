@@ -1,5 +1,6 @@
 package cn.vcamera.animationtest;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -16,6 +17,29 @@ public class FloatMenu {
     private FloatButton[] buttons;
     private boolean isOpen;
     private static final int LAG_BETWEEN_TIMES = 20;
+    private boolean isRunning;
+
+    private Animator.AnimatorListener lastAnimatorListener = new Animator.AnimatorListener() {
+        @Override
+        public void onAnimationStart(Animator animation) {
+            isRunning = true;
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            isRunning = false;
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+            isRunning = false;
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+            isRunning = true;
+        }
+    };
 
     public FloatMenu(Context context, int radius, int[] resources, View target, //
                      OnItemClickListener onItemClickListener) {
@@ -73,24 +97,25 @@ public class FloatMenu {
     }
 
     public void toggle() {
+        if (isRunning)
+            return;
+        int i = 0;
+        Animator animator;
         if (isOpen) {
-            close();
+            for (; i < buttons.length - 1; i++) {
+                buttons[i].close(i * LAG_BETWEEN_TIMES);
+            }
+            animator = buttons[i].close(i * LAG_BETWEEN_TIMES);
         } else {
-            open();
+            for (; i < buttons.length - 1; i++) {
+                buttons[i].open(i * LAG_BETWEEN_TIMES);
+            }
+            animator = buttons[i].open(i * LAG_BETWEEN_TIMES);
+        }
+        if (!animator.getListeners().contains(lastAnimatorListener)) {
+            animator.addListener(lastAnimatorListener);
         }
         isOpen = !isOpen;
-    }
-
-    public void open() {
-        for (int i = 0; i < buttons.length; i++) {
-            buttons[i].open(i * LAG_BETWEEN_TIMES);
-        }
-    }
-
-    public void close() {
-        for (int i = 0; i < buttons.length; i++) {
-            buttons[i].close(i * LAG_BETWEEN_TIMES);
-        }
     }
 
     public static class Builder {
